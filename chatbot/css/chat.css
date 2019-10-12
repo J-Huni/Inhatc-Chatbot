@@ -1,0 +1,37 @@
+html {
+  height: 100vh; }
+
+.chat-area {
+  height: 100%; }
+
+.input-btn {
+  margin-top: -5px; }
+
+.v-text-field__details {
+  display: none !important; }
+
+.chat-layout {
+  flex-wrap: nowrap !important; }
+
+.chat-layout .chat-avatar {
+  flex-grow: 0 !important; }
+
+.chat-layout .chat-box {
+  flex-grow: 0 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+  max-width: 70vw; }
+
+.chat-layout .chat-box .v-card {
+  margin-top: -5px;
+  padding: 10px; }
+
+.chat-layout .chat-panels {
+  flex-grow: 0 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+  max-width: 70vw; }
+
+.chat-layout .chat-panels .chat-panel {
+  margin-top: -5px;
+  padding: 10px; }

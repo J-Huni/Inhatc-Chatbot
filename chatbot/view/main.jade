@@ -1,0 +1,122 @@
+doctype html
+html
+        head
+                meta(charset='utf-8')
+                meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
+                link(rel='stylesheet',href='../css/default.css')
+                link(rel='stylesheet',href='../css/chat.css')
+                link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css")
+                link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@3.x/css/materialdesignicons.min.css")
+                script(src='https://code.jquery.com/jquery-2.2.4.min.js')
+                script(src="https://cdn.jsdelivr.net/npm/vue")
+                script(src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js")
+                script(src="https://unpkg.com/axios/dist/axios.min.js")
+                //- script(src="https://code.jquery.com/jquery-3.4.1.js")
+
+        body
+            #app
+                v-app#inspire
+                        //- v-content
+                                //- v-container(class="dark" fill)
+                        v-app-bar(dense clipped-left)
+                                v-app-bar-nav-icon
+                                v-toolbar-title 인하공업전문대학
+                        v-container.chat-area
+                                v-container(v-for="chat in chatlist" grid-list-xs fluid)
+                                        v-layout.chat-layout(v-if="chat.flag===1" align-start justify-start row fill-height)
+                                                v-flex.chat-avatar
+                                                        v-avatar(color="indigo" size="36")
+                                                                img(src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar")
+                                                v-flex.chat-box(v-if="chat.panel===false")
+                                                        v-card
+                                                                span {{chat.text}}
+                                                v-expansion-panels.chat-panels(v-if="chat.panel===true")
+                                                        v-expansion-panel.chat-panel(v-for="bot in chat.botlist")
+                                                                v-expansion-panel-header {{bot.group_title}}
+                                                                v-expansion-panel-content(v-html="bot.content")
+
+                                        v-layout.chat-layout(v-if="chat.flag===2" align-start justify-end row fill-height)
+                                                v-flex.chat-box
+                                                        v-card
+                                                                span {{chat.text}}
+                                                v-flex.chat-avatar
+                                                        v-avatar(color="indigo" size="36")
+                                                                img(src="https://vuetifyjs.com/apple-touch-icon-180x180.png" alt="avatar")
+                        v-footer
+                                v-row.input-area(no-gutters)
+                                        v-col
+                                                v-text-field(label='입력하세요' single-line filled v-model="userText" v-on:keyup.enter="userInput")
+                                                        template(v-slot:append)
+                                                                v-btn.input-btn(depressed color="primary" v-on:click="userInput") 전송
+        script.
+                Vue.config.devtools = true 
+                new Vue({
+                        el:'#app',
+                        vuetify:new Vuetify({
+                                theme:{
+                                        dark:false
+                                }
+                        }),
+                        data:{
+                                chatlist:[{flag:1,text:"안녕하세요 인하공전 챗봇입니다 무엇을 도와드릴까요",panel:false}],
+                                userText:"",
+                        },
+                        methods:{
+                                getData:function(){
+                                        var self=this
+                                        userText=this.userText
+                                        this.userText=""
+                                        axios.post("/chat",{userText:userText}).then((result)=>{
+                                                if(!result.data.dataNone){
+                                                        data=result.data.data
+                                                        dataLen=Object.keys(data).length
+                                                        if(dataLen<1){
+                                                                extract={
+                                                                        flag:1,
+                                                                        panel:false,
+                                                                        text:'검색결과가 없습니다'
+                                                                }
+                                                                this.chatlist.push(extract)
+                                                                return
+                                                        }
+                                                        panellist=[]
+                                                        for(key in data){
+                                                                list={indexNo:data[key].indexNo,
+                                                                        group_no:data[key].group_no,
+                                                                        group_title:data[key].group_title,
+                                                                        content:data[key].content}
+                                                                panellist.push(list)
+                                                        }
+                                                        extract={
+                                                                flag:1,
+                                                                panel:true,
+                                                                botlist:panellist
+                                                        }
+                                                        this.chatlist.push(extract)
+                                                }else{
+                                                        extract={
+                                                                flag:1,
+                                                                panel:false,
+                                                                text:'검색결과가 없습니다'
+                                                        }
+                                                        this.chatlist.push(extract)
+
+                                                }
+                                        }).catch((e)=>{
+                                                console.log(e)
+                                                extract={
+                                                        flag:1,
+                                                        panel:false,
+                                                        text:'오류발생'
+                                                }
+                                                this.chatlist.push(extract)
+                                        })
+                                },
+                                userInput:function(){
+                                        user={flag:2,text:this.userText,panel:false}
+                                        this.chatlist.push(user)
+                                        this.getData()
+                                }
+                        },
+
+                })

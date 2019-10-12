@@ -1,0 +1,24 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "debug": "nodemon --inspect app.js",
+    "scss": "node-sass --watch css/ --output css/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "jade": "^1.11.0",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.7.0",
+    "open-korean-text-node": "^2.2.0",
+    "promise": "^8.0.3",
+    "python-shell": "^1.0.8"
+  }
+}
